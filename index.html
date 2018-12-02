@@ -67,18 +67,18 @@ window.onload = function() {
 }
 
 vid.addEventListener("timeupdate", function(){
-    if(this.currentTime >= timeArray[currentLevel]) {
-        this.pause();
-    }
+  if(this.currentTime >= timeArray[currentLevel]) {
+    this.pause();
+  }
 });
 
 function playVid() { 
-    startedPlaying = true
-    vid.play()
+  startedPlaying = true
+  vid.play()
 } 
 
 function pauseVid() { 
-    vid.pause()
+  vid.pause()
 } 
 
 </script> 
