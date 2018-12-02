@@ -3,16 +3,16 @@
 <body> 
 <script src="https://download.affectiva.com/js/3.2/affdex.js"></script>
 
-<button onclick="playVid()" type="button">Play Video</button>
-<button onclick="pauseVid()" type="button">Pause Video</button><br>
+<button onclick="playVid()" class="button" type="button">Play Video</button>
+<button onclick="pauseVid()" class="button" type="button">Pause Video</button><br>
+<button onclick="skipLevel()" class="button" type="button">Skip</button>
 
 <style>
   #myProgress {
     width: 100%;
     background-color: white;
+    border-radius: 10px;
   }
-</style>
-<style>
   #myBar {
     width: 0%;
     height: 30px;
@@ -21,10 +21,36 @@
     -webkit-text-fill-color: #FFB036;
     line-height: 30px; /* To center it vertically */
     color: white;
+    padding: 10px; 
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    border-radius: 10px;
+  }
+  .button {
+    border: none;
+    color: white;
+    background-color: black;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    font-family: Helvetica, Arial, sans-serif;
+    border-radius: 16px;
+    transition-duration: 0.2s;
+  }
+  .message {
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 30px;
+    text-align: center;
+    clear: both;
   }
 </style>
 
-<section style="background-color: gray; padding: 20px">
+<section style="background-color: gray; padding: 20px; border-radius: 16px;">
 <div id='video' style="float: left; padding-left: 10px"></div>
 
 <video id="officeClip" width="640" height="480"
@@ -38,12 +64,13 @@ style="float:right; padding-right: 10px">
     <div id="myBar">0%</div>
   </div>
 </section>
-<div id='emoji' style="font-size: 40px; clear: both;"></div>
+<div id='emoji' class='message'>Press the play button when you're ready!</div>
+<div id='yourEmotion' class='message' style='color: gray'></div>
 
 <script> 
 var currentLevel = 0
 var emotionArray = [['smiley', 'laughing'], ['disappointed'], ['rage', 'scream']]
-var timeArray = [9, 15, 18]
+var timeArray = [9, 15, 19]
 var vid = document.getElementById("officeClip"); 
 var startedPlaying = false
 var barWidth = 0
@@ -67,27 +94,39 @@ window.onload = function() {
     //console.log(faces[0].emotions.joy)
     if (faces != undefined && faces.length > 0) {
       var obj = faces[0].emojis
+      console.log(faces[0].emojis.dominantEmoji)
       delete obj['dominantEmoji']
       var maxKey = Object.keys(obj).reduce((a, b) => obj[a] > obj[b] ? a : b);
-      console.log("test")
-      console.log(obj)
+      //console.log("test")
+      //console.log(obj)
       console.log(maxKey)
-      console.log(vid.paused)
-      console.log(currentLevel)
-      if (vid.paused && startedPlaying) {
-        if (emotionArray[currentLevel].includes(maxKey)) {
+      var yourEmotionMessage = maxKey
+      if (obj[maxKey] < 10) {
+        yourEmotionMessage = 'neutral'
+      }
+      if (yourEmotionMessage == 'stuckOutTongue') {
+        yourEmotionMessage = 'stuck out tongue'
+      } else if (yourEmotionMessage == 'stuckOutTongueWinkingEye') {
+        yourEmotionMessage = 'stuck out tongue and winking'
+      }
+      document.querySelector('#yourEmotion').innerText = yourEmotionMessage
+
+      //document.querySelector('#emoji').innerText = maxKey
+      //console.log(vid.paused)
+      //console.log(currentLevel)
+      if (vid.paused && startedPlaying && currentLevel < emotionArray.length) {
+        if (emotionArray[currentLevel].includes(maxKey) && obj[maxKey] >= 10) {
           barWidth += 2
           setBarWidth(barWidth)
-          if (barWidth == 100) {
-              currentLevel++
-              barWidth = 0
-              playVid()
-              setBarWidth(barWidth)
+          if (barWidth >= 100) {
+            nextLevel()
+            document.querySelector('#emoji').innerText = "Nice job!"
           }
         }
+      } else if (currentLevel >= emotionArray.length) {
+        document.querySelector('#emoji').innerText = "Thanks for playing!"
       }
       //document.querySelector('#emoji').innerText = faces[0].emojis.dominantEmoji
-      document.querySelector('#emoji').innerText = "Target Emotion"
     }
   })
 
@@ -96,41 +135,47 @@ window.onload = function() {
 
 vid.addEventListener("timeupdate", function(){
   if(this.currentTime >= timeArray[currentLevel]) {
-    this.pause();
+    pauseVid()
   }
-});
+})
 
 function playVid() { 
   startedPlaying = true
+  document.querySelector('#emoji').innerText = "Get ready to act! Have fun!"
   vid.play()
 } 
 
 function pauseVid() {
-    vid.pause()
+  vid.pause()
+  var targetEmotionMessage = ""
+  for (s in emotionArray[currentLevel]) {
+    console.log(emotionArray[currentLevel][s])
+    targetEmotionMessage += emotionArray[currentLevel][s] + " or "
+  }
+  targetEmotionMessage = targetEmotionMessage.substring(0, targetEmotionMessage.length - 4);
+  document.querySelector('#emoji').innerText = targetEmotionMessage
 }
-
-/*function move(rightEmotion) {
-    var elem = document.getElementById("myBar");
-    var width = 0;
-    var id = setInterval(frame, 10);
-
-
-    function frame() {
-      if (width >= 100) {
-        clearInterval(id);
-    //} else if(){
-    //    width++
-    //   elem.style.width = width + '%';
-    //    elem.innerHTML = width * 1 + '%';
-    //}
-    //}
-}*/
 
 function setBarWidth(width){
-    var elem = document.getElementById("myBar");
-    elem.style.width = width + "%"
-    elem.innerHTML = width * 1 + '%';
+  var elem = document.getElementById("myBar");
+  elem.style.width = width + "%"
+  elem.innerHTML = width * 1 + '%';
 }
+
+function skipLevel() {
+  if (vid.paused && startedPlaying) {
+    nextLevel()
+    document.querySelector('#emoji').innerText = "Level skipped"
+  }
+}
+
+function nextLevel() {
+  currentLevel++
+  barWidth = 0
+  playVid()
+  setBarWidth(barWidth)
+}
+              //TODO replace this with random message or possibly based on performance
 </script> 
 
 
