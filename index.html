@@ -4,7 +4,25 @@
 <script src="https://download.affectiva.com/js/3.2/affdex.js"></script>
 
 <button onclick="playVid()" type="button">Play Video</button>
-<button onclick="pauseVid()" type="button">Pause Video</button><br> 
+<button onclick="pauseVid()" type="button">Pause Video</button><br>
+
+<style>
+  #myProgress {
+    width: 100%;
+    background-color: white;
+  }
+</style>
+<style>
+  #myBar {
+    width: 0%;
+    height: 30px;
+    background-color: #FF4543;
+    text-align: center; /* To center it horizontally (if you want) */
+    -webkit-text-fill-color: #FFB036;
+    line-height: 30px; /* To center it vertically */
+    color: white;
+  }
+</style>
 
 <section style="background-color: gray; padding: 20px">
 <div id='video' style="float: left; padding-left: 10px"></div>
@@ -16,6 +34,9 @@ style="float:right; padding-right: 10px">
   Your browser does not support HTML5 video.
 </video>
 <div style="clear: both;"></div>
+  <div id="myProgress">
+    <div id="myBar">0%</div>
+  </div>
 </section>
 <div id='emoji' style="font-size: 40px; clear: both;"></div>
 
@@ -25,6 +46,7 @@ var emotionArray = [['smiley', 'laughing'], ['disappointed'], ['rage', 'scream']
 var timeArray = [9, 15, 18]
 var vid = document.getElementById("officeClip"); 
 var startedPlaying = false
+var barWidth = 0
 window.onload = function() {
   const videoWidth = 640, videoHeight = 480
   const faceMode = affdex.FaceDetectorMode.LARGE_FACES
@@ -54,12 +76,18 @@ window.onload = function() {
       console.log(currentLevel)
       if (vid.paused && startedPlaying) {
         if (emotionArray[currentLevel].includes(maxKey)) {
-          playVid()
-          currentLevel++
+          barWidth += 2
+          setBarWidth(barWidth)
+          if (barWidth == 100) {
+              currentLevel++
+              barWidth = 0
+              playVid()
+              setBarWidth(barWidth)
+          }
         }
       }
       //document.querySelector('#emoji').innerText = faces[0].emojis.dominantEmoji
-      document.querySelector('#emoji').innerText = maxKey
+      document.querySelector('#emoji').innerText = "Target Emotion"
     }
   })
 
@@ -79,7 +107,30 @@ function playVid() {
 
 function pauseVid() { 
     vid.pause()
-} 
+}
+
+/*function move(rightEmotion) {
+    var elem = document.getElementById("myBar");
+    var width = 0;
+    var id = setInterval(frame, 10);
+
+
+    function frame() {
+      if (width >= 100) {
+        clearInterval(id);
+    //} else if(){
+    //    width++
+    //   elem.style.width = width + '%';
+    //    elem.innerHTML = width * 1 + '%';
+    //}
+    //}
+}*/
+
+function setBarWidth(width){
+    var elem = document.getElementById("myBar");
+    elem.style.width = width + "%"
+    elem.innerHTML = width * 1 + '%';
+}
 
 </script> 
 
