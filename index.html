@@ -95,17 +95,17 @@ window.onload = function() {
 }
 
 vid.addEventListener("timeupdate", function(){
-    if(this.currentTime >= timeArray[currentLevel]) {
-        this.pause();
-    }
+  if(this.currentTime >= timeArray[currentLevel]) {
+    this.pause();
+  }
 });
 
 function playVid() { 
-    startedPlaying = true
-    vid.play()
+  startedPlaying = true
+  vid.play()
 } 
 
-function pauseVid() { 
+function pauseVid() {
     vid.pause()
 }
 
@@ -131,7 +131,6 @@ function setBarWidth(width){
     elem.style.width = width + "%"
     elem.innerHTML = width * 1 + '%';
 }
-
 </script> 
 
 
