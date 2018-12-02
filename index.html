@@ -1,0 +1,89 @@
+<!DOCTYPE html> 
+<html> 
+<body> 
+<script src="https://download.affectiva.com/js/3.2/affdex.js"></script>
+
+<button onclick="playVid()" type="button">Play Video</button>
+<button onclick="pauseVid()" type="button">Pause Video</button><br> 
+
+<section style="background-color: gray; padding: 20px">
+<div id='video' style="float: left; padding-left: 10px"></div>
+
+<video id="officeClip" width="640" height="480"
+style="float:right; padding-right: 10px">
+  <source src="office-toby.mp4" type="video/mp4">
+  <source src="office-toby.ogg" type="video/ogg">
+  Your browser does not support HTML5 video.
+</video>
+<div style="clear: both;"></div>
+</section>
+<div id='emoji' style="font-size: 40px; clear: both;"></div>
+
+<script> 
+var currentLevel = 0
+var emotionArray = [['smiley', 'laughing'], ['disappointed'], ['rage', 'scream']]
+var timeArray = [9, 15, 18]
+var vid = document.getElementById("officeClip"); 
+var startedPlaying = false
+window.onload = function() {
+  const videoWidth = 640, videoHeight = 480
+  const faceMode = affdex.FaceDetectorMode.LARGE_FACES
+
+  const detector = new affdex.CameraDetector(
+    document.querySelector('#video'),
+    videoWidth, videoHeight, faceMode
+  )
+
+  //detector.detectEmotions.joy = true
+  detector.detectAllEmojis()
+
+  detector.addEventListener('onImageResultsSuccess', function(faces) {
+    //console.log(faces[0].emotions.joy)
+    //console.log(faces[0].emojis.getDisappointed())
+    //console.log(faces)
+    //console.log(faces[0].emojis.dominantEmoji)
+    //console.log(faces[0].emotions.joy)
+    if (faces != undefined && faces.length > 0) {
+      var obj = faces[0].emojis
+      delete obj['dominantEmoji']
+      var maxKey = Object.keys(obj).reduce((a, b) => obj[a] > obj[b] ? a : b);
+      console.log("test")
+      console.log(obj)
+      console.log(maxKey)
+      console.log(vid.paused)
+      console.log(currentLevel)
+      if (vid.paused && startedPlaying) {
+        if (emotionArray[currentLevel].includes(maxKey)) {
+          playVid()
+          currentLevel++
+        }
+      }
+      //document.querySelector('#emoji').innerText = faces[0].emojis.dominantEmoji
+      document.querySelector('#emoji').innerText = maxKey
+    }
+  })
+
+  detector.start()
+}
+
+vid.addEventListener("timeupdate", function(){
+    if(this.currentTime >= timeArray[currentLevel]) {
+        this.pause();
+    }
+});
+
+function playVid() { 
+    startedPlaying = true
+    vid.play()
+} 
+
+function pauseVid() { 
+    vid.pause()
+} 
+
+</script> 
+
+
+</body> 
+</html>
+
