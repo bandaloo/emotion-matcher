@@ -3,9 +3,6 @@
 <body> 
 <script src="https://download.affectiva.com/js/3.2/affdex.js"></script>
 
-<button onclick="playVid()" class="button" type="button">Play Video</button>
-<button onclick="pauseVid()" class="button" type="button">Pause Video</button><br>
-<button onclick="skipLevel()" class="button" type="button">Skip</button>
 
 <style>
   #myProgress {
@@ -66,7 +63,9 @@ style="float:right; padding-right: 10px">
 </section>
 <div id='emoji' class='message'>Press the play button when you're ready!</div>
 <div id='yourEmotion' class='message' style='color: gray'></div>
-
+<div style="text-align: center; margin: 8">
+  <button onclick="playVid()" id="playButton" class="button" type="button" align="center">Play Video</button>
+</div>
 <script> 
 var currentLevel = 0
 var emotionArray = [['smiley', 'laughing'], ['disappointed'], ['rage', 'scream']]
@@ -109,7 +108,7 @@ window.onload = function() {
       } else if (yourEmotionMessage == 'stuckOutTongueWinkingEye') {
         yourEmotionMessage = 'stuck out tongue and winking'
       }
-      document.querySelector('#yourEmotion').innerText = yourEmotionMessage
+      document.querySelector('#yourEmotion').innerText = "Your Current Emotion: " + yourEmotionMessage
 
       //document.querySelector('#emoji').innerText = maxKey
       //console.log(vid.paused)
@@ -140,14 +139,20 @@ vid.addEventListener("timeupdate", function(){
 })
 
 function playVid() { 
-  startedPlaying = true
-  document.querySelector('#emoji').innerText = "Get ready to act! Have fun!"
-  vid.play()
+  if (!startedPlaying) {
+    startedPlaying = true
+    document.querySelector('#emoji').innerText = "Get ready to act! Have fun!"
+    document.querySelector('#playButton').innerText = "Skip"
+    vid.play()
+  } else {
+    console.log("test")
+    skipLevel()
+  }
 } 
 
 function pauseVid() {
   vid.pause()
-  var targetEmotionMessage = ""
+  var targetEmotionMessage = "Target Emotion: "
   for (s in emotionArray[currentLevel]) {
     console.log(emotionArray[currentLevel][s])
     targetEmotionMessage += emotionArray[currentLevel][s] + " or "
@@ -172,7 +177,7 @@ function skipLevel() {
 function nextLevel() {
   currentLevel++
   barWidth = 0
-  playVid()
+  vid.play()
   setBarWidth(barWidth)
 }
               //TODO replace this with random message or possibly based on performance
