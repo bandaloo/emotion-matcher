@@ -68,8 +68,27 @@ style="float:right; padding-right: 10px">
 </div>
 <script> 
 var currentLevel = 0
-var emotionArray = [['smiley', 'laughing'], ['disappointed'], ['rage', 'scream']]
-var timeArray = [9, 15, 19]
+//var emotionArray = [['smiley', 'laughing'], ['disappointed'], ['rage', 'scream']
+//                   ['temp'], ['temp'], ['temp'], ['temp'], ['temp'], ['temp']]
+
+/*
+var emotionArray = 
+[['disappointed'],
+['smiley', 'laughing'],
+['scream'],
+['smiley'],
+['smiley'],
+['rage', 'scream'],
+['disappointed'],
+['smiley'],
+['smirk']]
+*/
+var emotionArray = [['smiley', 'smirk'], ['disappointed'], ['rage', 'scream'], ['smiley'], ['scream'], ['scream'], ['smiley'], ['smirk'], ['disappointed'], ['disappointed']]
+
+//var timeArray = [9, 15, 19]
+//var timeArray = [11, 17, 20, 30, 39, 55, 67, 80, 90]
+var timeArray = [9,16,25,29,34,41,49,57,70,79]
+
 var vid = document.getElementById("officeClip"); 
 var startedPlaying = false
 var barWidth = 0
