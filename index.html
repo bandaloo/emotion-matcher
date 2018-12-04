@@ -1,6 +1,6 @@
-<!DOCTYPE html> 
-<html> 
-<body> 
+<!DOCTYPE html>
+<html>
+<body>
 <script src="https://download.affectiva.com/js/3.2/affdex.js"></script>
 
 
@@ -18,7 +18,7 @@
     -webkit-text-fill-color: #FFB036;
     line-height: 30px; /* To center it vertically */
     color: white;
-    padding: 10px; 
+    padding: 10px;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
     border-radius: 10px;
@@ -66,9 +66,8 @@ style="float:right; padding-right: 10px">
 <div style="text-align: center; margin: 8">
   <button onclick="playVid()" id="playButton" class="button" type="button" align="center">Play Video</button>
 </div>
-<script> 
+<script>
 var currentLevel = 0
-//var emotionArray = [['smiley', 'laughing'], ['disappointed'], ['rage', 'scream']
 //                   ['temp'], ['temp'], ['temp'], ['temp'], ['temp'], ['temp']]
 
 /*
@@ -90,8 +89,13 @@ var emotionArray = [['smiley', 'smirk'], ['disappointed'], ['rage', 'scream'], [
 var timeArray = [9,16,25,29,34,41,49,57,70,79]
 
 var vid = document.getElementById("officeClip"); 
+//var emotionArray = [['smiley', 'laughing'], ['disappointed'], ['rage', 'scream']]
+//var timeArray = [9, 15, 19]
+//var vid = document.getElementById("officeClip");
 var startedPlaying = false
 var barWidth = 0
+var textArray = ['Well Done!','Good Job!','Excellent!','Great!']
+var randText = textArray[Math.floor(Math.random() * textArray.length)]
 window.onload = function() {
   const videoWidth = 640, videoHeight = 480
   const faceMode = affdex.FaceDetectorMode.LARGE_FACES
@@ -138,7 +142,7 @@ window.onload = function() {
           setBarWidth(barWidth)
           if (barWidth >= 100) {
             nextLevel()
-            document.querySelector('#emoji').innerText = "Nice job!"
+            document.querySelector('#emoji').innerText = randText
           }
         }
       } else if (currentLevel >= emotionArray.length) {
@@ -157,7 +161,7 @@ vid.addEventListener("timeupdate", function(){
   }
 })
 
-function playVid() { 
+function playVid() {
   if (!startedPlaying) {
     startedPlaying = true
     document.querySelector('#emoji').innerText = "Get ready to act! Have fun!"
@@ -167,7 +171,7 @@ function playVid() {
     console.log("test")
     skipLevel()
   }
-} 
+}
 
 function pauseVid() {
   vid.pause()
@@ -200,9 +204,8 @@ function nextLevel() {
   setBarWidth(barWidth)
 }
               //TODO replace this with random message or possibly based on performance
-</script> 
+</script>
 
 
-</body> 
+</body>
 </html>
-
